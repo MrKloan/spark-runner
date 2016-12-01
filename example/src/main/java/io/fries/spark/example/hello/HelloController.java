@@ -1,7 +1,7 @@
-package io.fries.bogger.ws.hello;
+package io.fries.spark.example.hello;
 
-import io.fries.bogger.ws.core.ApiParser;
-import io.fries.bogger.ws.core.ApiResponse;
+import io.fries.spark.example.core.ApiParser;
+import io.fries.spark.example.core.ApiResponse;
 import spark.Request;
 import spark.Response;
 import spark.runner.annotations.SparkController;

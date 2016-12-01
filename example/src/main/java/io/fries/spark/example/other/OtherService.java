@@ -1,4 +1,4 @@
-package io.fries.bogger.ws.other;
+package io.fries.spark.example.other;
 
 import spark.runner.annotations.SparkComponent;
 

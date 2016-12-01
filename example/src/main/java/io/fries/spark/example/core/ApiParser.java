@@ -1,4 +1,4 @@
-package io.fries.bogger.ws.core;
+package io.fries.spark.example.core;
 
 import com.google.gson.Gson;
 import spark.runner.annotations.SparkComponent;

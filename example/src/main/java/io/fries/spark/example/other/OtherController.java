@@ -1,6 +1,6 @@
-package io.fries.bogger.ws.other;
+package io.fries.spark.example.other;
 
-import io.fries.bogger.ws.core.ApiResponse;
+import io.fries.spark.example.core.ApiResponse;
 import spark.Request;
 import spark.Response;
 import spark.runner.annotations.SparkController;

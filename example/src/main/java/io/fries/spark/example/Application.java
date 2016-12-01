@@ -1,4 +1,4 @@
-package io.fries.bogger.ws;
+package io.fries.spark.example;
 
 import spark.runner.SparkRunner;
 import spark.runner.SparkRunnerException;

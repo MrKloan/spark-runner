@@ -1,4 +1,4 @@
-package io.fries.bogger.ws.core;
+package io.fries.spark.example.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

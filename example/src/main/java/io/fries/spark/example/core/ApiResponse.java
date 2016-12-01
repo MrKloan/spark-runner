@@ -1,4 +1,4 @@
-package io.fries.bogger.ws.core;
+package io.fries.spark.example.core;
 
 import spark.Request;
 import spark.Response;

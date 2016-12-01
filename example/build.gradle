@@ -10,7 +10,7 @@ processResources {
     }
 }
 
-mainClassName = 'io.fries.bogger.ws.Application'
+mainClassName = 'io.fries.spark.example.Application'
 if(!hasProperty('mainClass')) {
     ext.mainClass = mainClassName
 }
