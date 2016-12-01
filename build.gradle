@@ -1,6 +1,6 @@
 allprojects {
     group 'io.fries'
-    version '0.1-SNAPSHOT'
+    version '1.0-RC1'
 }
 
 subprojects {
@@ -11,6 +11,9 @@ subprojects {
 
     repositories {
         mavenCentral()
+        maven {
+            url 'http://maven.fries.io/'
+        }
     }
 
     dependencies {
