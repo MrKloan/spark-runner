@@ -9,13 +9,13 @@ import spark.runner.annotations.SparkRoute;
 
 @SparkController(path = "/other")
 public class OtherController {
-
+	
 	@SparkInject
 	private OtherService otherService;
-
+	
 	@SparkRoute(path = "")
-	private ApiResponse getOtherResponse(Request req, Response res) {
-		String msg = otherService.other();
+	private ApiResponse getOtherResponse(final Request req, final Response res) {
+		final String msg = otherService.other();
 		return new ApiResponse.Builder(req, res).data(msg).build();
 	}
 }

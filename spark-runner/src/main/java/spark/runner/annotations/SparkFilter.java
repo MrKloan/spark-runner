@@ -8,9 +8,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SparkFilter {
-
-	enum Filter { BEFORE, AFTER }
-
+	
 	Filter filter();
 	String path() default "";
+	
+	enum Filter {BEFORE, AFTER}
 }

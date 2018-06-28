@@ -4,8 +4,8 @@ import spark.runner.annotations.SparkComponent;
 
 @SparkComponent
 public class OtherService {
-
-	public String other() {
+	
+	String other() {
 		return "Because you know?";
 	}
 }

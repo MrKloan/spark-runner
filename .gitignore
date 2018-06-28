@@ -1,4 +1,6 @@
-**/.idea/
+spark-runner.iml
+/.idea/
+/.gradle/
+
+**/out/
 **/build/
-**/.gradle/
-**/gradle*

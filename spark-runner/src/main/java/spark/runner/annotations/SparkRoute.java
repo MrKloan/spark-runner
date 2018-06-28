@@ -11,13 +11,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SparkRoute {
-
-	enum HttpMethod { GET, POST, PUT, PATCH, DELETE, HEAD, TRACE, CONNECT, OPTIONS }
-
+	
 	String path();
 	String accept() default "application/json";
 	String contentType() default "application/json";
 	HttpMethod method() default HttpMethod.GET;
 	Class<? extends ResponseTransformer> transformer() default JsonTransformer.class;
-
+	
+	enum HttpMethod {GET, POST, PUT, PATCH, DELETE, HEAD, TRACE, CONNECT, OPTIONS}
 }

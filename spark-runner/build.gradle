@@ -6,7 +6,7 @@ dependencies {
     compile 'org.slf4j:slf4j-simple:1.7.21'
 
     // Reflection libs
-    compile 'io.fries:reflection:1.0'
+    compile 'com.github.MrKloan:reflection:1.0'
 
     // Transformers libs
     compile 'com.google.code.gson:gson:2.8.0'
