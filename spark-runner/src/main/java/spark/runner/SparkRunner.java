@@ -9,6 +9,9 @@ import spark.ResponseTransformer;
 import spark.Route;
 import spark.Spark;
 import spark.runner.annotations.*;
+import spark.runner.config.ApplicationConfig;
+import spark.runner.config.ResourceBundleConfig;
+import spark.runner.config.SparkConfig;
 import spark.runner.exceptions.SparkRunnerException;
 
 import java.lang.reflect.Field;
@@ -16,7 +19,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import static java.lang.Thread.currentThread;
@@ -36,8 +38,7 @@ public final class SparkRunner {
 		final Object application = initApplication();
 		
 		// Configure the application
-		final ResourceBundle applicationProperties = initResourceBundle();
-		new SparkConfiguration(applicationProperties).run();
+		initSparkConfiguration().load();
 		
 		// Gather all the application classes using reflection
 		final Reflection reflection = getReflectionEngine();
@@ -86,19 +87,12 @@ public final class SparkRunner {
 		return SparkComponentStore.put(app);
 	}
 	
-	/**
-	 * @return The instance of the application's ResourceBundle, used to configure Spark
-	 * and store some application specific properties.
-	 *
-	 * @throws SparkRunnerException When the application's ResourceBundle cannot be accessed.
-	 */
-	private ResourceBundle initResourceBundle() throws SparkRunnerException {
+	private SparkConfig initSparkConfiguration() {
 		final SparkApplication sparkApplication = (SparkApplication) applicationClass.getAnnotation(SparkApplication.class);
-		final ResourceBundle resourceBundle = ResourceBundle.getBundle(sparkApplication.resourceBundle());
+		final ApplicationConfig applicationConfig = ResourceBundleConfig.of(sparkApplication.resourceBundle());
 		
-		if(resourceBundle == null)
-			throw new SparkRunnerException("Application ResourceBundle cannot be null.");
-		return SparkComponentStore.put(resourceBundle);
+		// SparkComponentStore.put(applicationConfig);
+		return SparkConfig.of(applicationConfig);
 	}
 	
 	/**
