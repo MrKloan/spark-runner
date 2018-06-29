@@ -4,33 +4,33 @@ import io.fries.spark.example.core.ApiParser;
 import io.fries.spark.example.core.ApiResponse;
 import spark.Request;
 import spark.Response;
-import spark.runner.annotations.SparkController;
-import spark.runner.annotations.SparkFilter;
-import spark.runner.annotations.SparkInject;
-import spark.runner.annotations.SparkRoute;
+import spark.runner.annotations.Controller;
+import spark.runner.annotations.Filter;
+import spark.runner.annotations.Inject;
+import spark.runner.annotations.Route;
 
-import static spark.runner.annotations.SparkFilter.Filter.AFTER;
+import static spark.runner.annotations.Filter.Type.AFTER;
 
-@SparkController(path = "/hello")
+@Controller(path = "/hello")
 public class HelloController {
 	
-	@SparkInject
+	@Inject
 	private ApiParser parser;
 	
-	@SparkInject
+	@Inject
 	private HelloService helloService;
 	
-	@SparkRoute(path = "")
+	@Route(path = "")
 	private ApiResponse getHelloMessage(final Request req, final Response res) {
 		return new ApiResponse.Builder(req, res).data(helloService.hello()).build();
 	}
 	
-	@SparkRoute(path = "/:name")
+	@Route(path = "/:name")
 	private ApiResponse getCustomMessage(final Request req, final Response res) {
 		return new ApiResponse.Builder(req, res).data(helloService.hello(req.params("name"))).build();
 	}
 	
-	@SparkFilter(filter = AFTER, path = "/*")
+	@Filter(type = AFTER, path = "/*")
 	private void afterCustomHello(final Request req, final Response res) {
 		final ApiResponse initialResponse = parser.object(res.body(), ApiResponse.class);
 		final String data = initialResponse.getData() + " It was nice meeting you. :)";

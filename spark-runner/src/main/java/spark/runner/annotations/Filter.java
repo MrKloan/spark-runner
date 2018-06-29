@@ -5,6 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SparkInject {}
+public @interface Filter {
+	
+	Type type();
+	String path() default "";
+	
+	enum Type {BEFORE, AFTER}
+}

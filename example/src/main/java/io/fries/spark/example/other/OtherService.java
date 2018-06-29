@@ -1,8 +1,8 @@
 package io.fries.spark.example.other;
 
-import spark.runner.annotations.SparkComponent;
+import spark.runner.annotations.Component;
 
-@SparkComponent
+@Component
 public class OtherService {
 	
 	String other() {

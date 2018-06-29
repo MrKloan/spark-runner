@@ -3,17 +3,17 @@ package io.fries.spark.example.other;
 import io.fries.spark.example.core.ApiResponse;
 import spark.Request;
 import spark.Response;
-import spark.runner.annotations.SparkController;
-import spark.runner.annotations.SparkInject;
-import spark.runner.annotations.SparkRoute;
+import spark.runner.annotations.Controller;
+import spark.runner.annotations.Inject;
+import spark.runner.annotations.Route;
 
-@SparkController(path = "/other")
+@Controller(path = "/other")
 public class OtherController {
 	
-	@SparkInject
+	@Inject
 	private OtherService otherService;
 	
-	@SparkRoute(path = "")
+	@Route(path = "")
 	private ApiResponse getOtherResponse(final Request req, final Response res) {
 		final String msg = otherService.other();
 		return new ApiResponse.Builder(req, res).data(msg).build();

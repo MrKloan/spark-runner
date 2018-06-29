@@ -1,8 +1,8 @@
 package io.fries.spark.example.hello;
 
-import spark.runner.annotations.SparkComponent;
+import spark.runner.annotations.Component;
 
-@SparkComponent
+@Component
 public class HelloService {
 
 	String hello() {

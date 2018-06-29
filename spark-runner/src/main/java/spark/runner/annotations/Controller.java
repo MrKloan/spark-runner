@@ -5,12 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SparkFilter {
-	
-	Filter filter();
+public @interface Controller {
 	String path() default "";
-	
-	enum Filter {BEFORE, AFTER}
 }

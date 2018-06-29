@@ -1,9 +1,9 @@
 package io.fries.spark.example.core;
 
 import com.google.gson.Gson;
-import spark.runner.annotations.SparkComponent;
+import spark.runner.annotations.Component;
 
-@SparkComponent
+@Component
 public class ApiParser {
 	
 	private final Gson gson;

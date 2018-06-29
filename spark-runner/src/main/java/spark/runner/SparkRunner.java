@@ -6,7 +6,6 @@ import io.fries.reflection.filters.PackageFilter;
 import io.fries.reflection.scanners.ClassPathScanner;
 import io.fries.reflection.scanners.Scanner;
 import spark.ResponseTransformer;
-import spark.Route;
 import spark.Spark;
 import spark.runner.annotations.*;
 import spark.runner.config.ApplicationConfig;
@@ -105,7 +104,7 @@ public final class SparkRunner {
 		final Scanner scanner = ClassPathScanner
 			.of(classLoader)
 			.filter(PackageFilter.withSubpackages(rootPackage))
-			.filter(AnnotationFilter.any(SparkComponent.class, SparkController.class, SparkWebSocket.class));
+			.filter(AnnotationFilter.any(Component.class, Controller.class, WebSocket.class));
 		
 		return Reflection.of(scanner);
 	}
@@ -116,8 +115,8 @@ public final class SparkRunner {
 	 * @return A set of classes annotated using either the {@code SparkComponent} or {@code SparkController} annotations.
 	 */
 	private Set<Class<?>> scanApplicationComponents(final Reflection reflection) {
-		final Set<Class<?>> components = reflection.getAnnotatedTypes(SparkComponent.class);
-		final Set<Class<?>> controllers = reflection.getAnnotatedTypes(SparkController.class);
+		final Set<Class<?>> components = reflection.getAnnotatedTypes(Component.class);
+		final Set<Class<?>> controllers = reflection.getAnnotatedTypes(Controller.class);
 		components.addAll(controllers);
 		
 		return components;
@@ -129,7 +128,7 @@ public final class SparkRunner {
 	 * @return A set of classes annotated using the {@code SparkWebSocket} annotation.
 	 */
 	private Set<Class<?>> scanApplicationWebSockets(final Reflection reflection) {
-		return reflection.getAnnotatedTypes(SparkWebSocket.class);
+		return reflection.getAnnotatedTypes(WebSocket.class);
 	}
 	
 	/**
@@ -164,8 +163,8 @@ public final class SparkRunner {
 			
 			injectFields(webSocket, webSocketClass);
 			
-			final SparkWebSocket sparkWebSocket;
-			if((sparkWebSocket = webSocketClass.getAnnotation(SparkWebSocket.class)) != null) {
+			final WebSocket sparkWebSocket;
+			if((sparkWebSocket = webSocketClass.getAnnotation(WebSocket.class)) != null) {
 				Spark.webSocket(sparkWebSocket.path(), webSocket);
 			}
 		}
@@ -192,8 +191,8 @@ public final class SparkRunner {
 			injectFields(component, componentClass);
 			injectExceptions(component, componentClass);
 			
-			SparkController sparkController;
-			if((sparkController = componentClass.getAnnotation(SparkController.class)) != null) {
+			Controller sparkController;
+			if((sparkController = componentClass.getAnnotation(Controller.class)) != null) {
 				injectFilters(component, sparkController, componentClass);
 				injectRoutes(component, sparkController, componentClass);
 			}
@@ -210,7 +209,7 @@ public final class SparkRunner {
 		final Field[] fields = componentClass.getDeclaredFields();
 		
 		for(final Field field : fields) {
-			if(!field.isAnnotationPresent(SparkInject.class))
+			if(!field.isAnnotationPresent(Inject.class))
 				continue;
 			
 			final boolean accessible = field.isAccessible();
@@ -240,9 +239,9 @@ public final class SparkRunner {
 		final Method[] methods = componentClass.getDeclaredMethods();
 		
 		for(Method method : methods) {
-			final SparkException sparkException;
+			final ExceptionHandler sparkException;
 			
-			if((sparkException = method.getAnnotation(SparkException.class)) == null)
+			if((sparkException = method.getAnnotation(ExceptionHandler.class)) == null)
 				continue;
 			
 			method.setAccessible(true);
@@ -263,16 +262,16 @@ public final class SparkRunner {
 	 * @param component      The stored instance of a given component.
 	 * @param componentClass The component's class used for methods reflection.
 	 */
-	private void injectFilters(final Object component, final SparkController sparkController, final Class<?> componentClass) throws SparkRunnerException {
+	private void injectFilters(final Object component, final Controller sparkController, final Class<?> componentClass) throws SparkRunnerException {
 		final Method[] methods = componentClass.getDeclaredMethods();
 		
 		try {
 			final String controllerPath = formatPath(sparkController.path());
 			
 			for(final Method method : methods) {
-				final SparkFilter sparkFilter;
+				final Filter sparkFilter;
 				
-				if((sparkFilter = method.getAnnotation(SparkFilter.class)) == null)
+				if((sparkFilter = method.getAnnotation(Filter.class)) == null)
 					continue;
 				
 				String filterPath = controllerPath + formatPath(sparkFilter.path());
@@ -281,7 +280,7 @@ public final class SparkRunner {
 				
 				method.setAccessible(true);
 				
-				switch(sparkFilter.filter()) {
+				switch(sparkFilter.type()) {
 					case BEFORE:
 						Spark.before(filterPath, (req, res) -> method.invoke(component, req, res));
 						break;
@@ -302,20 +301,20 @@ public final class SparkRunner {
 	 * @param component      The stored instance of a given component.
 	 * @param componentClass The component's class used for methods reflection.
 	 */
-	private void injectRoutes(final Object component, final SparkController sparkController, final Class<?> componentClass) throws SparkRunnerException {
+	private void injectRoutes(final Object component, final Controller sparkController, final Class<?> componentClass) throws SparkRunnerException {
 		final Method[] methods = componentClass.getDeclaredMethods();
 		
 		try {
 			final String controllerPath = formatPath(sparkController.path());
 			
 			for(final Method method : methods) {
-				final SparkRoute sparkRoute;
+				final Route sparkRoute;
 				
-				if((sparkRoute = method.getAnnotation(SparkRoute.class)) == null)
+				if((sparkRoute = method.getAnnotation(Route.class)) == null)
 					continue;
 				
 				final String routePath = controllerPath + formatPath(sparkRoute.path());
-				final Route routeLambda = createSparkRoute(component, sparkRoute, method);
+				final spark.Route routeLambda = createSparkRoute(component, sparkRoute, method);
 				final ResponseTransformer routeTransformer = (ResponseTransformer) createClassInstance(sparkRoute.transformer());
 				
 				method.setAccessible(true);
@@ -362,7 +361,7 @@ public final class SparkRunner {
 	 *
 	 * @return A Spark Route object to be bound to a certain endpoint.
 	 */
-	private Route createSparkRoute(final Object component, final SparkRoute sparkRoute, final Method method) {
+	private spark.Route createSparkRoute(final Object component, final Route sparkRoute, final Method method) {
 		return (req, res) -> {
 			if(!sparkRoute.accept().isEmpty())
 				res.header("Accept", sparkRoute.accept());
